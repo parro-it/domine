@@ -1,4 +1,5 @@
 import parseTag from './parse-tag';
+export * from './operations';
 
 function handleClassName(copyArg, vdom) {
   if ('className' in copyArg) {
