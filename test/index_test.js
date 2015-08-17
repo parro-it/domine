@@ -58,7 +58,7 @@ describe('domine', () => {
   it('first argument if string could contains className', () => {
     const result = domine('h1.column');
     result.tagName.should.be.equal('h1');
-    result.properties.className.should.be.equal('column');
+    result.properties.className.should.be.deep.equal(['column']);
   });
 
   it('first argument if string could contains id', () => {
@@ -68,11 +68,11 @@ describe('domine', () => {
     should.equal(result.properties.className, undefined);
   });
 
-  it('first argument if string could contains id', () => {
+  it('first argument if string could contains id and class', () => {
     const result = domine('h1#header.column');
     result.tagName.should.be.equal('h1');
     result.properties.id.should.be.equal('header');
-    result.properties.className.should.be.equal('column');
+    result.properties.className.should.be.deep.equal(['column']);
   });
 
   it('throw if first argument is number', () => {
@@ -117,6 +117,17 @@ describe('domine', () => {
   it('handle multiple classes in string', () => {
     const result = domine('h1', {className: 'for-test1 for-test2'});
     result.properties.className.should.be.deep.equal(['for-test1', 'for-test2']);
+  });
+
+  it('handle mix of class styles', () => {
+    const result = domine('main.one',
+      {className: {two: true}},
+      {className: 'three'},
+      {className: ['four', 'five']}
+    );
+    result.properties.className.should.be.deep.equal(
+      ['one', 'two', 'three', 'four', 'five']
+    );
   });
 
   it('handle multiple classes in array', () => {

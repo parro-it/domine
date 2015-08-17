@@ -41,7 +41,7 @@ export default function parseTag(tag, props) {
       classes.push(props.className);
     }
 
-    props.className = classes.join(' ');
+    props.className = classes;
   }
 
   return tagName ? tagName.toLowerCase() : 'div';
