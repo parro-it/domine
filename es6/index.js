@@ -22,15 +22,28 @@ function handleClassName(copyArg, vdom) {
 function handleStyle(copyArg, vdom) {
   if ('style' in copyArg) {
     let style = copyArg.style;
-    if (typeof style === 'string') {
-      style = Object.assign(...style.match(/\w+\s*:\s*\w+/g)
-        .map( r => {
-          const pair = r.split(':');
-          return { [pair[0].trim()]: pair[1].trim() };
-        }));
+    const styles = [];
+    if (!Array.isArray(style)) {
+      style = [style];
+    }
+    const toStyleObject = r => {
+      const pair = r.split(':');
+      return { [pair[0].trim()]: pair[1].trim() };
+    };
+
+    for (let s of style) {
+      if (typeof s === 'string') {
+        styles.push(
+          Object.assign(...s.match(/\w+\s*:\s*\w+/g)
+            .map(toStyleObject))
+        );
+      } else {
+        styles.push(s);
+      }
     }
 
-    vdom.properties.style = Object.assign(vdom.properties.style || {}, style);
+
+    vdom.properties.style = Object.assign(vdom.properties.style || {}, ...styles);
     delete copyArg.style;
   }
 }

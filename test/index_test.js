@@ -169,6 +169,21 @@ describe('domine', () => {
   });
 
   it('handle style properties as strings', () => {
+    const result = domine('main',
+      {style: {color: 'red'}},
+      {style: 'background:black; border:none'},
+      {style: ['display:block', 'float:left']}
+    );
+    result.properties.style.should.be.deep.equal({
+      color: 'red',
+      background: 'black',
+      border: 'none',
+      display: 'block',
+      'float': 'left'
+    });
+  });
+
+  it('handle mixed style properties', () => {
     const result = domine('h1', {style: 'color:black'}, {style: 'border:none'});
     result.properties.style.should.be.deep.equal({color: 'black', border: 'none' });
   });
