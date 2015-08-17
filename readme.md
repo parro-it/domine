@@ -17,3 +17,9 @@ npm install --save domine
 ## Credits
 
 ## License
+
+The MIT License (MIT)
+Copyright (c) 2015 Andrea Parodi
+
+
+

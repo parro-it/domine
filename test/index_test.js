@@ -3,16 +3,17 @@ if (process.env.TEST_RELEASE) {
   moduleRoot = '../dist';
 }
 
-const domine = require(moduleRoot);
+const domine = require(moduleRoot).default;
+const widget = require(moduleRoot).widget;
 
 describe('widget', () => {
   it('return function', () => {
-    const result = domine.widget('h1');
+    const result = widget('h1');
     result.should.be.a('function');
   });
 
   it('mix vdom with widget one', () => {
-    const w = domine.widget('h1', {prop1: '42'});
+    const w = widget('h1', {prop1: '42'});
     const result = w({prop2: '43'});
     result.should.be.deep.equal({
       __vdom: true,
@@ -26,8 +27,8 @@ describe('widget', () => {
   });
 
   it('widget could inherits other widgets', () => {
-    const w = domine.widget('h1', {prop1: '42'});
-    const w2 = domine.widget(w(), {prop3: '44'});
+    const w = widget('h1', {prop1: '42'});
+    const w2 = widget(w(), {prop3: '44'});
     const result = w2({prop2: '43'});
     result.should.be.deep.equal({
       __vdom: true,
@@ -52,7 +53,6 @@ describe('domine', () => {
     const result = domine('h1');
     result.tagName.should.be.equal('h1');
   });
-
 
 
   it('first argument if string could contains className', () => {
@@ -136,6 +136,15 @@ describe('domine', () => {
       className: 'for-test3\tfor-test4'
     });
     result.properties.className.should.be.deep.equal(['for-test1', 'for-test2', 'for-test3', 'for-test4']);
+  });
+
+  it('does not duplicate classnames', () => {
+    const result = domine('h1', {
+      className: ['for-test1']
+    }, {
+      className: ['for-test1']
+    });
+    result.properties.className.should.be.deep.equal(['for-test1']);
   });
 
   it('merge className properties', () => {

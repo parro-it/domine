@@ -10,7 +10,7 @@ function handleClassName(copyArg, vdom) {
     }
     const targetClasses = vdom.properties.className || (vdom.properties.className = []);
     for (let singleClass of classes) {
-      if (!targetClasses.includes(singleClass)) {
+      if (targetClasses.indexOf(singleClass) === -1) {
         targetClasses.push(singleClass);
       }
     }
@@ -50,12 +50,12 @@ function evaluateArg(arg, vdom) {
     handleClassName(copyArg, vdom);
     handleStyle(copyArg, vdom);
     Object.assign(vdom.properties, copyArg);
-  } else if ( ['string', 'number', 'boolean'].includes(typeof arg) ) {
+  } else if ( ['string', 'number', 'boolean'].indexOf(typeof arg) !== -1 ) {
     vdom.children.push(arg.toString());
   }
 }
 
-export default function d(tagName, ...args) {
+export default function domine(tagName, ...args) {
   const vdom = {
     __vdom: true,
     tagName: null,
@@ -76,11 +76,11 @@ export default function d(tagName, ...args) {
   return vdom;
 }
 
-d.widget = (...args) => {
-  const vdom = d(...args);
+export function widget(...args) {
+  const vdom = domine(...args);
   return (...otherArgs) => {
-    return d(vdom, otherArgs);
+    return domine(vdom, otherArgs);
   };
-};
+}
 
 
