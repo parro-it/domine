@@ -70,7 +70,7 @@ function evaluateArg(arg, vdom) {
 }
 
 export default function domine(tagName, ...args) {
-  const vdom = {
+  let vdom = {
     __vdom: true,
     tagName: null,
     properties: {},
@@ -80,7 +80,7 @@ export default function domine(tagName, ...args) {
   if (typeof tagName === 'string') {
     vdom.tagName = parseTag(tagName, vdom.properties);
   } else if ( isVdom(tagName) ) {
-    Object.assign(vdom, tagName);
+    vdom = JSON.parse(JSON.stringify(tagName));
   } else {
     throw new TypeError('tagName must be a string or vdom object.');
   }
@@ -92,6 +92,7 @@ export default function domine(tagName, ...args) {
 
 export function widget(...args) {
   const vdom = domine(...args);
+
   return (...otherArgs) => {
     return domine(vdom, otherArgs);
   };
