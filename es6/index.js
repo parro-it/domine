@@ -99,3 +99,4 @@ export function widget(...args) {
 }
 
 
+export const props = widget('');
