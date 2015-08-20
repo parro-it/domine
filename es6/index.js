@@ -4,17 +4,33 @@ export * from './operations';
 function handleClassName(copyArg, vdom) {
   if ('className' in copyArg) {
     let classes = copyArg.className;
+    let classesToRemove = [];
+
     if (typeof classes === 'string') {
       classes = classes.split(/\s/);
     } else if (typeof classes === 'object' && !Array.isArray(classes)) {
-      classes = Object.keys(classes).filter(className => classes[className]);
+      classesToRemove = Object.keys(classes)
+        .filter(className => !classes[className]);
+
+      classes = Object.keys(classes)
+        .filter(className => classes[className]);
     }
+
     const targetClasses = vdom.properties.className || (vdom.properties.className = []);
+
     for (let singleClass of classes) {
       if (targetClasses.indexOf(singleClass) === -1) {
         targetClasses.push(singleClass);
       }
     }
+
+    for (let singleClass of classesToRemove) {
+      const idx = targetClasses.indexOf(singleClass);
+      if (idx !== -1) {
+        targetClasses.splice(idx, 1);
+      }
+    }
+
     delete copyArg.className;
   }
 }

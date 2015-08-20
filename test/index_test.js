@@ -130,6 +130,16 @@ describe('domine', () => {
     );
   });
 
+  it('class could be removed with false', () => {
+    const result = domine('main',
+      {className: ['four', 'five']},
+      {className: {four: false}}
+    );
+    result.properties.className.should.be.deep.equal(
+      ['five']
+    );
+  });
+
   it('handle multiple classes in array', () => {
     const result = domine('h1', {className: ['for-test1', 'for-test2']});
     result.properties.className.should.be.deep.equal(['for-test1', 'for-test2']);
