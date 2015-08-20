@@ -58,7 +58,7 @@ describe('domine', () => {
   it('first argument if string could contains className', () => {
     const result = domine('h1.column');
     result.tagName.should.be.equal('h1');
-    result.properties.className.should.be.deep.equal(['column']);
+    result.properties.className.should.be.deep.equal({column: true});
   });
 
   it('first argument if string could contains id', () => {
@@ -72,7 +72,7 @@ describe('domine', () => {
     const result = domine('h1#header.column');
     result.tagName.should.be.equal('h1');
     result.properties.id.should.be.equal('header');
-    result.properties.className.should.be.deep.equal(['column']);
+    result.properties.className.should.be.deep.equal({column: true});
   });
 
   it('throw if first argument is number', () => {
@@ -111,12 +111,12 @@ describe('domine', () => {
 
   it('objects arguments set vdom properties', () => {
     const result = domine('h1', {className: 'for-test'});
-    result.properties.className.should.be.deep.equal(['for-test']);
+    result.properties.className.should.be.deep.equal({'for-test': true});
   });
 
   it('handle multiple classes in string', () => {
     const result = domine('h1', {className: 'for-test1 for-test2'});
-    result.properties.className.should.be.deep.equal(['for-test1', 'for-test2']);
+    result.properties.className.should.be.deep.equal({'for-test1': true, 'for-test2': true});
   });
 
   it('handle mix of class styles', () => {
@@ -125,29 +125,30 @@ describe('domine', () => {
       {className: 'three'},
       {className: ['four', 'five']}
     );
+
     result.properties.className.should.be.deep.equal(
-      ['one', 'two', 'three', 'four', 'five']
+      {'one': true, 'two': true, 'three': true, 'four': true, 'five': true}
     );
   });
 
-  it('class could be removed with false', () => {
+  it('class could not be removed with false', () => {
     const result = domine('main',
       {className: ['four', 'five']},
       {className: {four: false}}
     );
     result.properties.className.should.be.deep.equal(
-      ['five']
+      { four: false, five: true }
     );
   });
 
   it('handle multiple classes in array', () => {
     const result = domine('h1', {className: ['for-test1', 'for-test2']});
-    result.properties.className.should.be.deep.equal(['for-test1', 'for-test2']);
+    result.properties.className.should.be.deep.equal({'for-test1': true, 'for-test2': true});
   });
 
   it('handle multiple classes as boolean values', () => {
     const result = domine('h1', {className: {test1: true, test2: true, test3: false}});
-    result.properties.className.should.be.deep.equal(['test1', 'test2']);
+    result.properties.className.should.be.deep.equal({test1: true, test2: true, test3: false});
   });
 
   it('handle multiple classes in array or string', () => {
@@ -156,7 +157,7 @@ describe('domine', () => {
     }, {
       className: 'for-test3\tfor-test4'
     });
-    result.properties.className.should.be.deep.equal(['for-test1', 'for-test2', 'for-test3', 'for-test4']);
+    result.properties.className.should.be.deep.equal({'for-test1': true, 'for-test2': true, 'for-test3': true, 'for-test4': true});
   });
 
   it('does not duplicate classnames', () => {
@@ -165,12 +166,12 @@ describe('domine', () => {
     }, {
       className: ['for-test1']
     });
-    result.properties.className.should.be.deep.equal(['for-test1']);
+    result.properties.className.should.be.deep.equal({'for-test1': true});
   });
 
   it('merge className properties', () => {
     const result = domine('h1', {className: 'for-test1'}, {className: 'for-test2'});
-    result.properties.className.should.be.deep.equal(['for-test1', 'for-test2']);
+    result.properties.className.should.be.deep.equal({'for-test1': true, 'for-test2': true});
   });
 
   it('merge style properties', () => {

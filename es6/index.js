@@ -1,35 +1,23 @@
 import parseTag from './parse-tag';
 export * from './operations';
+// import pairs from 'object-pairs';
+import zipmap from 'zipmap';
 
 function handleClassName(copyArg, vdom) {
   if ('className' in copyArg) {
     let classes = copyArg.className;
-    let classesToRemove = [];
 
     if (typeof classes === 'string') {
-      classes = classes.split(/\s/);
-    } else if (typeof classes === 'object' && !Array.isArray(classes)) {
-      classesToRemove = Object.keys(classes)
-        .filter(className => !classes[className]);
-
-      classes = Object.keys(classes)
-        .filter(className => classes[className]);
+      classes = zipmap(classes.split(/\s/).map(k => [k, true]));
+    } else if (Array.isArray(classes)) {
+      classes = zipmap(classes.map(k => [k, true]));
+    } else if (typeof classes !== 'object') {
+      throw new TypeError('Unsupported className type');
     }
 
-    const targetClasses = vdom.properties.className || (vdom.properties.className = []);
+    const targetClasses = vdom.properties.className || (vdom.properties.className = {});
 
-    for (let singleClass of classes) {
-      if (targetClasses.indexOf(singleClass) === -1) {
-        targetClasses.push(singleClass);
-      }
-    }
-
-    for (let singleClass of classesToRemove) {
-      const idx = targetClasses.indexOf(singleClass);
-      if (idx !== -1) {
-        targetClasses.splice(idx, 1);
-      }
-    }
+    Object.assign(targetClasses, classes);
 
     delete copyArg.className;
   }
@@ -102,7 +90,6 @@ export default function domine(tagName, ...args) {
   }
 
   evaluateArg(args, vdom);
-
   return vdom;
 }
 

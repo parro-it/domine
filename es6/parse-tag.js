@@ -29,19 +29,15 @@ export default function parseTag(tag, props) {
     if (!tagName) {
       tagName = part;
     } else if (type === '.') {
-      classes = classes || [];
-      classes.push(part.substring(1, part.length));
+      classes = classes || {};
+      classes[part.substring(1, part.length)] = true;
     } else if (type === '#' && noId) {
       props.id = part.substring(1, part.length);
     }
   }
 
   if (classes) {
-    if (props.className) {
-      classes.push(props.className);
-    }
-
-    props.className = classes;
+    props.className = Object.assign(props.className || {}, classes);
   }
 
   return tagName ? tagName.toLowerCase() : 'div';

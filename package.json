@@ -5,7 +5,9 @@
   "version": "1.1.4",
   "main": "dist/index.js",
   "dependencies": {
-    "babel-runtime": "^5.8.20"
+    "babel-runtime": "^5.8.20",
+    "object-pairs": "^0.1.0",
+    "zipmap": "^1.1.1"
   },
   "license": "MIT",
   "author": "andrea@parro.it",
